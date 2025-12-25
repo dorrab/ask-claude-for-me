@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Let Me Ask Claude For You</title>
+    <title>Let Me Ask AI For You</title>
     <style>
         * {
             margin: 0;
@@ -95,15 +95,35 @@
             color: #808080;
         }
 
-        .buttons {
+        .buttons-section {
+            margin-top: 20px;
+        }
+
+        .section-label {
+            text-align: center;
+            color: #a0a0a0;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+        }
+
+        .ai-buttons {
             display: flex;
-            gap: 15px;
+            gap: 12px;
             justify-content: center;
             flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .copy-button {
+            display: flex;
+            justify-content: center;
         }
 
         button {
-            padding: 14px 28px;
+            padding: 14px 24px;
             font-size: 1rem;
             font-weight: 600;
             border: none;
@@ -113,34 +133,51 @@
             font-family: inherit;
         }
 
-        .btn-primary {
-            background: #cc785c;
+        .btn-ai {
+            background: rgba(255, 255, 255, 0.08);
             color: #ffffff;
-            box-shadow: 0 4px 15px rgba(204, 120, 92, 0.4);
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            min-width: 140px;
         }
 
-        .btn-primary:hover {
-            background: #b86a4f;
+        .btn-ai:hover {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.3);
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(204, 120, 92, 0.6);
         }
 
-        .btn-primary:active {
+        .btn-ai:active {
             transform: translateY(0);
         }
 
-        .btn-secondary {
+        .btn-claude:hover {
+            border-color: #cc785c;
+            background: rgba(204, 120, 92, 0.15);
+        }
+
+        .btn-chatgpt:hover {
+            border-color: #10a37f;
+            background: rgba(16, 163, 127, 0.15);
+        }
+
+        .btn-gemini:hover {
+            border-color: #4285f4;
+            background: rgba(66, 133, 244, 0.15);
+        }
+
+        .btn-copy {
             background: rgba(255, 255, 255, 0.1);
             color: #ffffff;
             border: 1px solid rgba(255, 255, 255, 0.2);
+            min-width: 180px;
         }
 
-        .btn-secondary:hover {
+        .btn-copy:hover {
             background: rgba(255, 255, 255, 0.15);
             border-color: rgba(255, 255, 255, 0.3);
         }
 
-        .btn-secondary.copied {
+        .btn-copy.copied {
             background: rgba(76, 175, 80, 0.3);
             border-color: rgba(76, 175, 80, 0.5);
         }
@@ -167,7 +204,7 @@
                 padding: 30px 20px;
             }
 
-            .buttons {
+            .ai-buttons {
                 flex-direction: column;
             }
 
@@ -184,24 +221,35 @@
 <body>
     <div class="container">
         <header>
-            <h1>Let Me Ask Claude For You</h1>
-            <p class="subtitle">For people who need a gentle nudge to use AI</p>
+            <h1>Let Me Ask AI For You</h1>
+            <p class="subtitle">Choose your AI assistant and get instant help</p>
         </header>
 
         <div class="card">
             <div class="status" id="status">Type your question below</div>
 
             <div class="question-container">
-                <textarea id="questionInput" placeholder="What would you like to ask Claude?"></textarea>
+                <textarea id="questionInput" placeholder="What would you like to ask?"></textarea>
             </div>
 
-            <div class="buttons">
-                <button class="btn-primary" id="openClaudeBtn" onclick="openClaude()">
-                    Ask Claude
-                </button>
-                <button class="btn-secondary" id="copyBtn" onclick="copyQuestion()">
-                    Copy Question
-                </button>
+            <div class="buttons-section">
+                <div class="section-label">Choose Your AI</div>
+                <div class="ai-buttons">
+                    <button class="btn-ai btn-claude" onclick="openAI('claude')">
+                        Open Claude
+                    </button>
+                    <button class="btn-ai btn-chatgpt" onclick="openAI('chatgpt')">
+                        Open ChatGPT
+                    </button>
+                    <button class="btn-ai btn-gemini" onclick="openAI('gemini')">
+                        Open Gemini
+                    </button>
+                </div>
+                <div class="copy-button">
+                    <button class="btn-copy" id="copyBtn" onclick="copyQuestion()">
+                        Copy Question Only
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -283,8 +331,22 @@
             }
         }
 
-        // Open Claude with copy and redirect
-        async function openClaude() {
+        // AI platform URLs
+        const aiUrls = {
+            claude: 'https://claude.ai/new',
+            chatgpt: 'https://chat.openai.com/',
+            gemini: 'https://gemini.google.com/app'
+        };
+
+        // AI platform names for display
+        const aiNames = {
+            claude: 'Claude',
+            chatgpt: 'ChatGPT',
+            gemini: 'Gemini'
+        };
+
+        // Open AI platform with copy and redirect
+        async function openAI(platform) {
             const question = getQuestion();
             const statusEl = document.getElementById('status');
 
@@ -302,11 +364,12 @@
             await copyToClipboard(question);
 
             // Update status with clear instruction
-            statusEl.textContent = '✓ Question copied! Just paste it into Claude (Cmd+V / Ctrl+V)';
+            const aiName = aiNames[platform];
+            statusEl.textContent = `✓ Question copied! Just paste it into ${aiName} (Cmd+V / Ctrl+V)`;
 
             // Small delay for user feedback, then redirect
             setTimeout(() => {
-                window.location.href = 'https://claude.ai/new';
+                window.location.href = aiUrls[platform];
             }, 1000);
         }
 
@@ -317,16 +380,10 @@
             // Pre-fill if URL parameter exists
             if (urlQuestion) {
                 questionInput.value = urlQuestion;
-                document.getElementById('status').textContent = 'Ready to ask Claude!';
+                document.getElementById('status').textContent = 'Question loaded! Choose your AI below.';
             }
 
-            // Allow Enter key to submit (with Shift+Enter for new lines)
-            questionInput.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault();
-                    openClaude();
-                }
-            });
+            // Shift+Enter for new lines (Enter alone does default textarea behavior)
         });
     </script>
 </body>
