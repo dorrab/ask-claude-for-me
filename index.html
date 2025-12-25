@@ -301,13 +301,13 @@
             // Copy to clipboard
             await copyToClipboard(question);
 
-            // Update status
-            statusEl.textContent = 'Opening Claude...';
+            // Update status with clear instruction
+            statusEl.textContent = '✓ Question copied! Just paste it into Claude (Cmd+V / Ctrl+V)';
 
             // Small delay for user feedback, then redirect
             setTimeout(() => {
                 window.location.href = 'https://claude.ai/new';
-            }, 500);
+            }, 1000);
         }
 
         // Initialize on page load
