@@ -109,7 +109,22 @@
             margin-bottom: 12px;
         }
 
-        .ai-buttons {
+        .featured-ai {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .other-ais-label {
+            text-align: center;
+            color: #909090;
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-bottom: 10px;
+            margin-top: 5px;
+        }
+
+        .other-ai-buttons {
             display: flex;
             gap: 12px;
             justify-content: center;
@@ -120,6 +135,9 @@
         .copy-button {
             display: flex;
             justify-content: center;
+            padding-top: 10px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 10px;
         }
 
         button {
@@ -226,7 +244,11 @@
                 padding: 30px 20px;
             }
 
-            .ai-buttons {
+            .featured-ai {
+                flex-direction: column;
+            }
+
+            .other-ai-buttons {
                 flex-direction: column;
             }
 
@@ -255,12 +277,16 @@
             </div>
 
             <div class="buttons-section">
-                <div class="section-label">Choose Your AI</div>
-                <div class="ai-buttons">
+                <div class="section-label">Recommended</div>
+                <div class="featured-ai">
                     <button class="btn-ai btn-perplexity" onclick="openAI('perplexity')">
                         ⭐ Perplexity
-                        <span class="recommended-badge">Auto-fills question - Recommended</span>
+                        <span class="recommended-badge">Auto-fills question - No paste needed!</span>
                     </button>
+                </div>
+
+                <div class="other-ais-label">Or choose another AI</div>
+                <div class="other-ai-buttons">
                     <button class="btn-ai btn-claude" onclick="openAI('claude')">
                         Claude
                     </button>
@@ -274,6 +300,7 @@
                         Copilot
                     </button>
                 </div>
+
                 <div class="copy-button">
                     <button class="btn-copy" id="copyBtn" onclick="copyQuestion()">
                         Copy Question Only
