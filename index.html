@@ -182,6 +182,11 @@
             border-color: #4285f4;
         }
 
+        .btn-copilot {
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+            border-color: #8b5cf6;
+        }
+
         .btn-copy {
             background: rgba(255, 255, 255, 0.1);
             color: #ffffff;
@@ -264,6 +269,9 @@
                     </button>
                     <button class="btn-ai btn-gemini" onclick="openAI('gemini')">
                         Gemini
+                    </button>
+                    <button class="btn-ai btn-copilot" onclick="openAI('copilot')">
+                        Copilot
                     </button>
                 </div>
                 <div class="copy-button">
@@ -357,7 +365,8 @@
             perplexity: 'https://www.perplexity.ai/',
             claude: 'https://claude.ai/new',
             chatgpt: 'https://chat.openai.com/',
-            gemini: 'https://gemini.google.com/app'
+            gemini: 'https://gemini.google.com/app',
+            copilot: 'https://copilot.microsoft.com/'
         };
 
         // AI platform names for display
@@ -365,7 +374,8 @@
             perplexity: 'Perplexity',
             claude: 'Claude',
             chatgpt: 'ChatGPT',
-            gemini: 'Gemini'
+            gemini: 'Gemini',
+            copilot: 'Copilot'
         };
 
         // Open AI platform with copy and redirect
