@@ -67,43 +67,32 @@
         }
 
         .question-container {
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 12px;
-            padding: 30px;
             margin-bottom: 30px;
-            min-height: 120px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 150px;
+            background: rgba(0, 0, 0, 0.3);
             border: 2px solid rgba(204, 120, 92, 0.3);
-            transition: border-color 0.3s ease;
-        }
-
-        .question-container.typing {
-            border-color: rgba(204, 120, 92, 0.6);
-        }
-
-        .question-text {
-            font-size: clamp(1.2rem, 4vw, 1.8rem);
+            border-radius: 12px;
+            padding: 20px;
+            font-size: clamp(1rem, 3vw, 1.2rem);
             line-height: 1.6;
             color: #ffffff;
-            text-align: center;
-            word-wrap: break-word;
+            font-family: inherit;
+            resize: vertical;
+            transition: border-color 0.3s ease, background 0.3s ease;
         }
 
-        .cursor {
-            display: inline-block;
-            width: 3px;
-            height: 1.4em;
-            background-color: #cc785c;
-            margin-left: 4px;
-            animation: blink 1s infinite;
-            vertical-align: middle;
+        textarea:focus {
+            outline: none;
+            border-color: rgba(204, 120, 92, 0.6);
+            background: rgba(0, 0, 0, 0.4);
         }
 
-        @keyframes blink {
-            0%, 49% { opacity: 1; }
-            50%, 100% { opacity: 0; }
+        textarea::placeholder {
+            color: #808080;
         }
 
         .buttons {
@@ -200,15 +189,15 @@
         </header>
 
         <div class="card">
-            <div class="status" id="status">Preparing your question...</div>
+            <div class="status" id="status">Type your question below</div>
 
-            <div class="question-container" id="questionContainer">
-                <div class="question-text" id="questionText"></div>
+            <div class="question-container">
+                <textarea id="questionInput" placeholder="What would you like to ask Claude?"></textarea>
             </div>
 
             <div class="buttons">
                 <button class="btn-primary" id="openClaudeBtn" onclick="openClaude()">
-                    Open in Claude
+                    Ask Claude
                 </button>
                 <button class="btn-secondary" id="copyBtn" onclick="copyQuestion()">
                     Copy Question
@@ -218,51 +207,14 @@
 
         <footer>
             Made with ❤️ for people who ask before searching<br>
-            <a href="https://github.com/dbouchiha/ask-claude-for-me" target="_blank">View on GitHub</a>
+            <a href="https://github.com/dorrab/ask-claude-for-me" target="_blank">View on GitHub</a>
         </footer>
     </div>
 
     <script>
-        // Parse URL parameters
+        // Parse URL parameters and pre-fill textarea if question is provided
         const urlParams = new URLSearchParams(window.location.search);
-        const question = urlParams.get('q') || 'How do I solve this problem?';
-
-        let typingComplete = false;
-        let hasAutoCopied = false;
-
-        // Type out the question with animation
-        function typeQuestion(text, callback) {
-            const container = document.getElementById('questionText');
-            const questionContainer = document.getElementById('questionContainer');
-            const statusEl = document.getElementById('status');
-
-            statusEl.textContent = 'Typing your question...';
-            questionContainer.classList.add('typing');
-
-            let index = 0;
-            const cursor = document.createElement('span');
-            cursor.className = 'cursor';
-            container.appendChild(cursor);
-
-            function typeChar() {
-                if (index < text.length) {
-                    // Insert character before cursor
-                    const textNode = document.createTextNode(text[index]);
-                    container.insertBefore(textNode, cursor);
-                    index++;
-                    setTimeout(typeChar, 50); // 50ms per character
-                } else {
-                    // Typing complete
-                    cursor.remove();
-                    questionContainer.classList.remove('typing');
-                    statusEl.textContent = 'Ready to ask Claude!';
-                    typingComplete = true;
-                    if (callback) callback();
-                }
-            }
-
-            typeChar();
-        }
+        const urlQuestion = urlParams.get('q');
 
         // Copy to clipboard
         async function copyToClipboard(text) {
@@ -289,27 +241,39 @@
             }
         }
 
-        // Auto-copy when typing completes
-        function autoCopy() {
-            if (!hasAutoCopied) {
-                copyToClipboard(question);
-                hasAutoCopied = true;
-            }
+        // Get current question from textarea
+        function getQuestion() {
+            return document.getElementById('questionInput').value.trim();
         }
 
         // Manual copy with feedback
         async function copyQuestion() {
+            const question = getQuestion();
             const copyBtn = document.getElementById('copyBtn');
+            const statusEl = document.getElementById('status');
+
+            if (!question) {
+                statusEl.textContent = 'Please type a question first!';
+                statusEl.style.color = '#ff6b6b';
+                setTimeout(() => {
+                    statusEl.textContent = 'Type your question below';
+                    statusEl.style.color = '#cc785c';
+                }, 2000);
+                return;
+            }
+
             const success = await copyToClipboard(question);
 
             if (success) {
                 const originalText = copyBtn.textContent;
                 copyBtn.textContent = '✓ Copied!';
                 copyBtn.classList.add('copied');
+                statusEl.textContent = 'Question copied to clipboard!';
 
                 setTimeout(() => {
                     copyBtn.textContent = originalText;
                     copyBtn.classList.remove('copied');
+                    statusEl.textContent = 'Type your question below';
                 }, 2000);
             } else {
                 copyBtn.textContent = '✗ Copy failed';
@@ -319,25 +283,49 @@
             }
         }
 
-        // Open Claude with redirect
-        function openClaude() {
-            window.location.href = 'https://claude.ai/new';
-        }
+        // Open Claude with copy and redirect
+        async function openClaude() {
+            const question = getQuestion();
+            const statusEl = document.getElementById('status');
 
-        // Auto-redirect after delay
-        function autoRedirect() {
+            if (!question) {
+                statusEl.textContent = 'Please type a question first!';
+                statusEl.style.color = '#ff6b6b';
+                setTimeout(() => {
+                    statusEl.textContent = 'Type your question below';
+                    statusEl.style.color = '#cc785c';
+                }, 2000);
+                return;
+            }
+
+            // Copy to clipboard
+            await copyToClipboard(question);
+
+            // Update status
+            statusEl.textContent = 'Opening Claude...';
+
+            // Small delay for user feedback, then redirect
             setTimeout(() => {
-                if (typingComplete) {
-                    openClaude();
-                }
-            }, 2000); // 2 second delay after typing completes
+                window.location.href = 'https://claude.ai/new';
+            }, 500);
         }
 
         // Initialize on page load
         document.addEventListener('DOMContentLoaded', () => {
-            typeQuestion(question, () => {
-                autoCopy();
-                autoRedirect();
+            const questionInput = document.getElementById('questionInput');
+
+            // Pre-fill if URL parameter exists
+            if (urlQuestion) {
+                questionInput.value = urlQuestion;
+                document.getElementById('status').textContent = 'Ready to ask Claude!';
+            }
+
+            // Allow Enter key to submit (with Shift+Enter for new lines)
+            questionInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    openClaude();
+                }
             });
         });
     </script>

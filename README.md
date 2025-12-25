@@ -1,21 +1,21 @@
 # Let Me Ask Claude For You 🤖
 
-A playful single-page website that helps people discover Claude AI - inspired by "Let Me Google That For You". When someone visits with a question, it types it out with a smooth animation, copies it to their clipboard, and redirects them to Claude.ai.
+A playful single-page website that helps people discover Claude AI - inspired by "Let Me Google That For You". Users can type their question, and with one click it copies to their clipboard and redirects them to Claude.ai.
 
 Perfect for when someone asks you a question that Claude could answer instantly! 😊
 
 ## 🌐 Live Demo
 
-Visit: [https://dbouchiha.github.io/ask-claude-for-me/](https://dbouchiha.github.io/ask-claude-for-me/)
+Visit: [https://dorrab.github.io/ask-claude-for-me/](https://dorrab.github.io/ask-claude-for-me/)
 
 ## ✨ Features
 
-- **Smooth Typing Animation**: Character-by-character typing effect (50ms per character)
-- **Auto-Copy to Clipboard**: Automatically copies the question when typing completes
-- **Auto-Redirect**: Redirects to Claude.ai after 2 seconds
-- **Manual Controls**:
-  - "Open in Claude" button for immediate access
-  - "Copy Question" button with visual feedback
+- **Interactive Text Input**: Type or edit your question in a sleek textarea
+- **URL Pre-fill Support**: Share links with pre-filled questions via `?q=` parameter
+- **One-Click Copy & Redirect**: "Ask Claude" button copies and opens Claude.ai
+- **Manual Copy Option**: Separate "Copy Question" button with visual feedback
+- **Keyboard Shortcut**: Press Enter to submit (Shift+Enter for new lines)
+- **Input Validation**: Helpful messages if you try to submit without a question
 - **Responsive Design**: Works beautifully on mobile and desktop
 - **Modern UI**: Glassmorphic design with smooth animations
 - **No Dependencies**: Single self-contained HTML file
@@ -34,32 +34,39 @@ https://dbouchiha.github.io/ask-claude-for-me/?q=Your question here
 
 **For technical questions:**
 ```
-https://dbouchiha.github.io/ask-claude-for-me/?q=Why is PostgreSQL throwing connection errors?
+https://dorrab.github.io/ask-claude-for-me/?q=Why is PostgreSQL throwing connection errors?
 ```
 
 **For debugging help:**
 ```
-https://dbouchiha.github.io/ask-claude-for-me/?q=How do I debug a 503 error in our API?
+https://dorrab.github.io/ask-claude-for-me/?q=How do I debug a 503 error in our API?
 ```
 
 **For optimization tips:**
 ```
-https://dbouchiha.github.io/ask-claude-for-me/?q=What's the best way to optimize Oracle read performance?
+https://dorrab.github.io/ask-claude-for-me/?q=What's the best way to optimize Oracle read performance?
 ```
 
 **For general help:**
 ```
-https://dbouchiha.github.io/ask-claude-for-me/?q=How do I center a div in CSS?
+https://dorrab.github.io/ask-claude-for-me/?q=How do I center a div in CSS?
 ```
 
 ## 📖 How It Works
 
-1. **User clicks your link** with a question in the `?q=` parameter
-2. **Typing animation** displays the question character by character
-3. **Auto-copy** copies the question to clipboard when typing completes
-4. **Status updates** show "Typing your question..." → "Ready to ask Claude!"
-5. **Auto-redirect** opens Claude.ai/new after 2 seconds
+1. **User visits** the site (optionally with a `?q=` parameter to pre-fill)
+2. **Type or edit** their question in the textarea
+3. **Click "Ask Claude"** (or press Enter)
+4. **Auto-copy** copies the question to clipboard
+5. **Auto-redirect** opens Claude.ai/new
 6. **User pastes** the question (already in clipboard) into Claude
+
+### Alternative: Direct Share Mode
+
+Share a link with the `?q=` parameter:
+- Question is pre-filled in the textarea
+- Recipient can edit if needed
+- One click to copy and open Claude
 
 ## 🎨 Design
 
@@ -83,9 +90,10 @@ https://dbouchiha.github.io/ask-claude-for-me/?q=How do I center a div in CSS?
 - Mobile browsers (iOS Safari, Chrome Mobile)
 
 ### Key Features Implementation
-- **Typing Animation**: Uses `setTimeout` recursion for smooth character rendering
+- **Text Input**: HTML5 textarea with custom styling and focus states
 - **Clipboard Copy**: Uses modern Clipboard API with `document.execCommand` fallback
-- **URL Parsing**: `URLSearchParams` API for query string handling
+- **URL Parsing**: `URLSearchParams` API for query string handling and pre-filling
+- **Keyboard Shortcuts**: Enter to submit, Shift+Enter for multi-line input
 - **Responsive Design**: CSS media queries and `clamp()` for fluid typography
 
 ## 📦 Deployment
