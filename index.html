@@ -134,35 +134,52 @@
         }
 
         .btn-ai {
-            background: rgba(255, 255, 255, 0.08);
             color: #ffffff;
-            border: 2px solid rgba(255, 255, 255, 0.15);
+            border: 2px solid transparent;
             min-width: 140px;
+            position: relative;
         }
 
         .btn-ai:hover {
-            background: rgba(255, 255, 255, 0.12);
-            border-color: rgba(255, 255, 255, 0.3);
             transform: translateY(-2px);
+            filter: brightness(1.1);
         }
 
         .btn-ai:active {
             transform: translateY(0);
         }
 
-        .btn-claude:hover {
+        .btn-perplexity {
+            background: linear-gradient(135deg, #1fb0e6 0%, #1a8fc9 100%);
+            border-color: #1fb0e6;
+            box-shadow: 0 4px 15px rgba(31, 176, 230, 0.4);
+        }
+
+        .btn-perplexity:hover {
+            box-shadow: 0 6px 20px rgba(31, 176, 230, 0.6);
+        }
+
+        .recommended-badge {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 500;
+            margin-top: 2px;
+            opacity: 0.95;
+        }
+
+        .btn-claude {
+            background: linear-gradient(135deg, #d4886b 0%, #cc785c 100%);
             border-color: #cc785c;
-            background: rgba(204, 120, 92, 0.15);
         }
 
-        .btn-chatgpt:hover {
+        .btn-chatgpt {
+            background: linear-gradient(135deg, #19c47c 0%, #10a37f 100%);
             border-color: #10a37f;
-            background: rgba(16, 163, 127, 0.15);
         }
 
-        .btn-gemini:hover {
+        .btn-gemini {
+            background: linear-gradient(135deg, #5a95f5 0%, #4285f4 100%);
             border-color: #4285f4;
-            background: rgba(66, 133, 244, 0.15);
         }
 
         .btn-copy {
@@ -235,14 +252,18 @@
             <div class="buttons-section">
                 <div class="section-label">Choose Your AI</div>
                 <div class="ai-buttons">
+                    <button class="btn-ai btn-perplexity" onclick="openAI('perplexity')">
+                        ⭐ Perplexity
+                        <span class="recommended-badge">Auto-fills question - Recommended</span>
+                    </button>
                     <button class="btn-ai btn-claude" onclick="openAI('claude')">
-                        Open Claude
+                        Claude
                     </button>
                     <button class="btn-ai btn-chatgpt" onclick="openAI('chatgpt')">
-                        Open ChatGPT
+                        ChatGPT
                     </button>
                     <button class="btn-ai btn-gemini" onclick="openAI('gemini')">
-                        Open Gemini
+                        Gemini
                     </button>
                 </div>
                 <div class="copy-button">
@@ -331,8 +352,9 @@
             }
         }
 
-        // AI platform URLs
+        // AI platform URLs (base URLs without parameters)
         const aiUrls = {
+            perplexity: 'https://www.perplexity.ai/',
             claude: 'https://claude.ai/new',
             chatgpt: 'https://chat.openai.com/',
             gemini: 'https://gemini.google.com/app'
@@ -340,6 +362,7 @@
 
         // AI platform names for display
         const aiNames = {
+            perplexity: 'Perplexity',
             claude: 'Claude',
             chatgpt: 'ChatGPT',
             gemini: 'Gemini'
@@ -363,14 +386,22 @@
             // Copy to clipboard
             await copyToClipboard(question);
 
-            // Update status with clear instruction
             const aiName = aiNames[platform];
-            statusEl.textContent = `✓ Question copied! Just paste it into ${aiName} (Cmd+V / Ctrl+V)`;
 
-            // Small delay for user feedback, then redirect
-            setTimeout(() => {
-                window.location.href = aiUrls[platform];
-            }, 1000);
+            // Perplexity supports URL parameters for auto-filling
+            if (platform === 'perplexity') {
+                statusEl.textContent = `✓ Opening ${aiName} with your question auto-filled!`;
+                setTimeout(() => {
+                    const encodedQuestion = encodeURIComponent(question);
+                    window.location.href = `https://www.perplexity.ai/?q=${encodedQuestion}`;
+                }, 1000);
+            } else {
+                // Other platforms: copy and user pastes manually
+                statusEl.textContent = `✓ Question copied! Just paste it into ${aiName} (Cmd+V / Ctrl+V)`;
+                setTimeout(() => {
+                    window.location.href = aiUrls[platform];
+                }, 1000);
+            }
         }
 
         // Initialize on page load

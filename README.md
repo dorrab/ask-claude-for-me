@@ -1,6 +1,6 @@
 # Let Me Ask AI For You 🤖
 
-A playful single-page website that helps people discover AI assistants - inspired by "Let Me Google That For You". Users can type their question and choose from Claude, ChatGPT, or Gemini. The question is copied to their clipboard and they're redirected to their chosen AI.
+A playful single-page website that helps people discover AI assistants - inspired by "Let Me Google That For You". Users can type their question and choose from Perplexity, Claude, ChatGPT, or Gemini. The question is copied to their clipboard (or auto-filled in Perplexity!) and they're redirected to their chosen AI.
 
 Perfect for when someone asks you a question that AI could answer instantly! 😊
 
@@ -10,7 +10,8 @@ Visit: [https://dorrab.github.io/ask-claude-for-me/](https://dorrab.github.io/as
 
 ## ✨ Features
 
-- **Multi-AI Support**: Choose between Claude, ChatGPT, or Gemini
+- **⭐ Perplexity - Recommended**: Auto-fills your question directly in the search (no paste needed!)
+- **Multi-AI Support**: Choose between Perplexity, Claude, ChatGPT, or Gemini
 - **Interactive Text Input**: Type or edit your question in a sleek textarea
 - **URL Pre-fill Support**: Share links with pre-filled questions via `?q=` parameter
 - **One-Click Copy & Redirect**: Each AI button copies question and opens the platform
@@ -18,7 +19,7 @@ Visit: [https://dorrab.github.io/ask-claude-for-me/](https://dorrab.github.io/as
 - **Clear Instructions**: Shows which platform you're opening with paste shortcuts
 - **Input Validation**: Helpful messages if you try to submit without a question
 - **Responsive Design**: Works beautifully on mobile and desktop
-- **Modern UI**: Glassmorphic design with brand-colored hover effects
+- **Brand-Colored Buttons**: Each AI has its signature brand color
 - **No Dependencies**: Single self-contained HTML file
 
 ## 🚀 Quick Start
@@ -57,10 +58,17 @@ https://dorrab.github.io/ask-claude-for-me/?q=How do I center a div in CSS?
 
 1. **User visits** the site (optionally with a `?q=` parameter to pre-fill)
 2. **Type or edit** their question in the textarea
-3. **Choose AI platform**: Click "Open Claude", "Open ChatGPT", or "Open Gemini"
-4. **Auto-copy**: Question is copied to clipboard
-5. **Auto-redirect**: Opens the selected AI chat platform
-6. **User pastes**: Question (already in clipboard) into the AI chat
+3. **Choose AI platform**:
+   - **⭐ Perplexity (Recommended)**: Auto-fills question directly - no paste needed!
+   - **Claude, ChatGPT, or Gemini**: Question copied to clipboard for manual paste
+4. **Auto-redirect**: Opens the selected AI chat platform
+5. **User interacts**:
+   - Perplexity: Question is already there, just hit enter!
+   - Others: Paste with Cmd+V / Ctrl+V
+
+### Why Perplexity is Recommended
+
+Perplexity supports URL parameters, so your question is **automatically filled in** when the page opens. No copy-paste needed! This makes it the smoothest experience for sharing questions.
 
 ### Alternative: Direct Share Mode
 
@@ -72,12 +80,13 @@ Share a link with the `?q=` parameter:
 
 ## 🎨 Design
 
-- **Color Scheme**: Dark gradient background with brand-colored hover effects
-  - Claude: #cc785c (Wealthsimple copper)
+- **Color Scheme**: Dark gradient background with vibrant brand-colored buttons
+  - Perplexity: #1fb0e6 (Perplexity blue) with glow effect - Featured
+  - Claude: #cc785c (Claude orange)
   - ChatGPT: #10a37f (OpenAI green)
   - Gemini: #4285f4 (Google blue)
 - **Typography**: System font stack for optimal performance
-- **Effects**: Backdrop blur, smooth transitions, hover animations
+- **Effects**: Backdrop blur, smooth gradient buttons, hover animations, glow effects
 - **Responsive**: Stacks buttons vertically on mobile devices
 
 ## 🛠️ Technical Details
@@ -95,11 +104,12 @@ Share a link with the `?q=` parameter:
 - Mobile browsers (iOS Safari, Chrome Mobile)
 
 ### Key Features Implementation
-- **Multi-Platform Support**: Dynamic URL routing for Claude, ChatGPT, and Gemini
+- **Multi-Platform Support**: Dynamic URL routing for Perplexity, Claude, ChatGPT, and Gemini
+- **Smart URL Generation**: Perplexity gets `?q=` parameter auto-fill, others use clipboard
 - **Text Input**: HTML5 textarea with custom styling and focus states
 - **Clipboard Copy**: Uses modern Clipboard API with `document.execCommand` fallback
 - **URL Parsing**: `URLSearchParams` API for query string handling and pre-filling
-- **Brand Colors**: Hover effects with each AI platform's signature color
+- **Brand Colors**: Gradient buttons with each AI platform's signature color
 - **Responsive Design**: CSS media queries and `clamp()` for fluid typography
 
 ## 📦 Deployment
@@ -138,4 +148,4 @@ Made with ❤️ for people who ask before searching.
 
 ---
 
-**Note**: This is an unofficial project and is not affiliated with Anthropic (Claude), OpenAI (ChatGPT), or Google (Gemini).
+**Note**: This is an unofficial project and is not affiliated with Perplexity AI, Anthropic (Claude), OpenAI (ChatGPT), or Google (Gemini).
