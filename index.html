@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Let Me Ask Claude For You</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #1a1a1a 100%);
+            color: #ffffff;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            font-size: clamp(1.8rem, 5vw, 3rem);
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: #ffffff;
+        }
+
+        .subtitle {
+            font-size: clamp(1rem, 3vw, 1.2rem);
+            color: #a0a0a0;
+            font-weight: 400;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .status {
+            text-align: center;
+            color: #cc785c;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            min-height: 24px;
+            transition: all 0.3s ease;
+        }
+
+        .question-container {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            min-height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid rgba(204, 120, 92, 0.3);
+            transition: border-color 0.3s ease;
+        }
+
+        .question-container.typing {
+            border-color: rgba(204, 120, 92, 0.6);
+        }
+
+        .question-text {
+            font-size: clamp(1.2rem, 4vw, 1.8rem);
+            line-height: 1.6;
+            color: #ffffff;
+            text-align: center;
+            word-wrap: break-word;
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 3px;
+            height: 1.4em;
+            background-color: #cc785c;
+            margin-left: 4px;
+            animation: blink 1s infinite;
+            vertical-align: middle;
+        }
+
+        @keyframes blink {
+            0%, 49% { opacity: 1; }
+            50%, 100% { opacity: 0; }
+        }
+
+        .buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 14px 28px;
+            font-size: 1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .btn-primary {
+            background: #cc785c;
+            color: #ffffff;
+            box-shadow: 0 4px 15px rgba(204, 120, 92, 0.4);
+        }
+
+        .btn-primary:hover {
+            background: #b86a4f;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(204, 120, 92, 0.6);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-secondary.copied {
+            background: rgba(76, 175, 80, 0.3);
+            border-color: rgba(76, 175, 80, 0.5);
+        }
+
+        footer {
+            text-align: center;
+            color: #808080;
+            font-size: 0.9rem;
+            margin-top: 20px;
+        }
+
+        footer a {
+            color: #cc785c;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        footer a:hover {
+            color: #b86a4f;
+        }
+
+        @media (max-width: 600px) {
+            .card {
+                padding: 30px 20px;
+            }
+
+            .buttons {
+                flex-direction: column;
+            }
+
+            button {
+                width: 100%;
+            }
+
+            .question-container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Let Me Ask Claude For You</h1>
+            <p class="subtitle">For people who need a gentle nudge to use AI</p>
+        </header>
+
+        <div class="card">
+            <div class="status" id="status">Preparing your question...</div>
+
+            <div class="question-container" id="questionContainer">
+                <div class="question-text" id="questionText"></div>
+            </div>
+
+            <div class="buttons">
+                <button class="btn-primary" id="openClaudeBtn" onclick="openClaude()">
+                    Open in Claude
+                </button>
+                <button class="btn-secondary" id="copyBtn" onclick="copyQuestion()">
+                    Copy Question
+                </button>
+            </div>
+        </div>
+
+        <footer>
+            Made with ❤️ for people who ask before searching<br>
+            <a href="https://github.com/dbouchiha/ask-claude-for-me" target="_blank">View on GitHub</a>
+        </footer>
+    </div>
+
+    <script>
+        // Parse URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const question = urlParams.get('q') || 'How do I solve this problem?';
+
+        let typingComplete = false;
+        let hasAutoCopied = false;
+
+        // Type out the question with animation
+        function typeQuestion(text, callback) {
+            const container = document.getElementById('questionText');
+            const questionContainer = document.getElementById('questionContainer');
+            const statusEl = document.getElementById('status');
+
+            statusEl.textContent = 'Typing your question...';
+            questionContainer.classList.add('typing');
+
+            let index = 0;
+            const cursor = document.createElement('span');
+            cursor.className = 'cursor';
+            container.appendChild(cursor);
+
+            function typeChar() {
+                if (index < text.length) {
+                    // Insert character before cursor
+                    const textNode = document.createTextNode(text[index]);
+                    container.insertBefore(textNode, cursor);
+                    index++;
+                    setTimeout(typeChar, 50); // 50ms per character
+                } else {
+                    // Typing complete
+                    cursor.remove();
+                    questionContainer.classList.remove('typing');
+                    statusEl.textContent = 'Ready to ask Claude!';
+                    typingComplete = true;
+                    if (callback) callback();
+                }
+            }
+
+            typeChar();
+        }
+
+        // Copy to clipboard
+        async function copyToClipboard(text) {
+            try {
+                // Modern Clipboard API
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    await navigator.clipboard.writeText(text);
+                    return true;
+                } else {
+                    // Fallback for older browsers
+                    const textarea = document.createElement('textarea');
+                    textarea.value = text;
+                    textarea.style.position = 'fixed';
+                    textarea.style.opacity = '0';
+                    document.body.appendChild(textarea);
+                    textarea.select();
+                    const success = document.execCommand('copy');
+                    document.body.removeChild(textarea);
+                    return success;
+                }
+            } catch (err) {
+                console.error('Failed to copy:', err);
+                return false;
+            }
+        }
+
+        // Auto-copy when typing completes
+        function autoCopy() {
+            if (!hasAutoCopied) {
+                copyToClipboard(question);
+                hasAutoCopied = true;
+            }
+        }
+
+        // Manual copy with feedback
+        async function copyQuestion() {
+            const copyBtn = document.getElementById('copyBtn');
+            const success = await copyToClipboard(question);
+
+            if (success) {
+                const originalText = copyBtn.textContent;
+                copyBtn.textContent = '✓ Copied!';
+                copyBtn.classList.add('copied');
+
+                setTimeout(() => {
+                    copyBtn.textContent = originalText;
+                    copyBtn.classList.remove('copied');
+                }, 2000);
+            } else {
+                copyBtn.textContent = '✗ Copy failed';
+                setTimeout(() => {
+                    copyBtn.textContent = 'Copy Question';
+                }, 2000);
+            }
+        }
+
+        // Open Claude with redirect
+        function openClaude() {
+            window.location.href = 'https://claude.ai/new';
+        }
+
+        // Auto-redirect after delay
+        function autoRedirect() {
+            setTimeout(() => {
+                if (typingComplete) {
+                    openClaude();
+                }
+            }, 2000); // 2 second delay after typing completes
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            typeQuestion(question, () => {
+                autoCopy();
+                autoRedirect();
+            });
+        });
+    </script>
+</body>
+</html>
