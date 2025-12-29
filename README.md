@@ -44,11 +44,6 @@ https://dorrab.github.io/ask-claude-for-me/?q=Why is PostgreSQL throwing connect
 https://dorrab.github.io/ask-claude-for-me/?q=How do I debug a 503 error in our API?
 ```
 
-**For optimization tips:**
-```
-https://dorrab.github.io/ask-claude-for-me/?q=What's the best way to optimize Oracle read performance?
-```
-
 **For general help:**
 ```
 https://dorrab.github.io/ask-claude-for-me/?q=How do I center a div in CSS?
